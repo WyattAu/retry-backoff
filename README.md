@@ -1,4 +1,4 @@
-# retry-backoff
+# loop-retry
 
 Generic async retry with exponential backoff and jitter.
 

@@ -12,5 +12,5 @@ mod retry;
 mod traits;
 
 pub use config::RetryConfig;
-pub use retry::with_backoff;
+pub use retry::{RetryError, with_backoff};
 pub use traits::IsRetryable;
