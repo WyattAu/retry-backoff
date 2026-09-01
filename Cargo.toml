@@ -6,6 +6,8 @@ rust-version = "1.85"
 description = "Generic async retry with exponential backoff and jitter"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/WyattAu/loop-retry"
+keywords = ["retry", "backoff", "async"]
+categories = ["rust-patterns"]
 
 [dependencies]
 tokio = { version = "1", features = ["time"] }
