@@ -18,10 +18,7 @@ use crate::traits::IsRetryable;
 ///     client.get("https://api.example.com/data").await
 /// }).await;
 /// ```
-pub async fn with_backoff<F, Fut, T, E>(
-    config: &RetryConfig,
-    mut f: F,
-) -> Result<T, RetryError<E>>
+pub async fn with_backoff<F, Fut, T, E>(config: &RetryConfig, mut f: F) -> Result<T, RetryError<E>>
 where
     F: FnMut() -> Fut,
     Fut: std::future::Future<Output = Result<T, E>>,
@@ -34,16 +31,43 @@ where
             Ok(value) => return Ok(value),
             Err(err) => {
                 if !err.is_retryable() || attempt == config.max_retries {
+                    #[cfg(feature = "tracing")]
+                    tracing::warn!(
+                        attempt,
+                        max_retries = config.max_retries,
+                        error = %err,
+                        "all retries exhausted"
+                    );
                     return Err(RetryError::FinalError(err, attempt));
                 }
 
                 let delay = config.delay_for_attempt(attempt);
+                #[cfg(feature = "tracing")]
+                tracing::error!(
+                    attempt,
+                    max_retries = config.max_retries,
+                    error = %err,
+                    "error encountered, will retry"
+                );
+                #[cfg(feature = "tracing")]
+                tracing::debug!(
+                    attempt,
+                    max_retries = config.max_retries,
+                    delay_ms = delay.as_millis() as u64,
+                    error = %err,
+                    "retrying after error"
+                );
                 last_error = Some(err);
                 tokio::time::sleep(delay).await;
             }
         }
     }
 
+    #[cfg(feature = "tracing")]
+    tracing::warn!(
+        max_retries = config.max_retries,
+        "all retries exhausted (unreachable path)"
+    );
     Err(RetryError::FinalError(
         last_error.expect("loop must have executed at least once"),
         config.max_retries,
@@ -77,8 +101,8 @@ impl<E: IsRetryable + std::fmt::Display> RetryError<E> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::sync::atomic::{AtomicU32, Ordering};
     use std::sync::Arc;
+    use std::sync::atomic::{AtomicU32, Ordering};
     use std::time::Duration;
 
     #[derive(Debug)]
