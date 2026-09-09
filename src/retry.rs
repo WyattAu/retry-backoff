@@ -24,8 +24,6 @@ where
     Fut: std::future::Future<Output = Result<T, E>>,
     E: IsRetryable + std::fmt::Display,
 {
-    let mut last_error = None;
-
     for attempt in 0..=config.max_retries {
         match f().await {
             Ok(value) => return Ok(value),
@@ -57,7 +55,6 @@ where
                     error = %err,
                     "retrying after error"
                 );
-                last_error = Some(err);
                 tokio::time::sleep(delay).await;
             }
         }
@@ -68,10 +65,10 @@ where
         max_retries = config.max_retries,
         "all retries exhausted (unreachable path)"
     );
-    Err(RetryError::FinalError(
-        last_error.expect("loop must have executed at least once"),
-        config.max_retries,
-    ))
+    // Unreachable: the loop's final iteration (`attempt == max_retries`)
+    // always returns `FinalError` above, and `0..=max_retries` executes at
+    // least once. Kept only so the function type-checks.
+    unreachable!("retry loop always returns on its final iteration");
 }
 
 /// Error type for retry operations.
@@ -99,6 +96,8 @@ impl<E: IsRetryable + std::fmt::Display> RetryError<E> {
 }
 
 #[cfg(test)]
+// Test code: unwrap/unwrap_err/expect are the idiomatic way to assert outcomes.
+#[allow(clippy::unwrap_used, clippy::expect_used)]
 mod tests {
     use super::*;
     use std::sync::Arc;
