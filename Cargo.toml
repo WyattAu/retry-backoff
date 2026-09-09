@@ -1,4 +1,5 @@
 [package]
+exclude = ["/target"]
 name = "loop-retry"
 version = "0.1.0"
 edition = "2024"
@@ -29,3 +30,7 @@ unsafe_code = "forbid"
 [[bench]]
 name = "retry_bench"
 harness = false
+
+[lints.clippy]
+unwrap_used = "warn"
+expect_used = "warn"
