@@ -1,5 +1,9 @@
 # loop-retry
 
+[![docs.rs](https://docs.rs/loop-retry/badge.svg)](https://docs.rs/loop-retry)
+[![crates.io](https://img.shields.io/crates/v/loop-retry.svg)](https://crates.io/crates/loop-retry)
+[![License](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg)](LICENSE)
+
 Generic async retry with exponential backoff and jitter.
 
 ## Usage
