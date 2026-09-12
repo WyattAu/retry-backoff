@@ -1,7 +1,7 @@
 [package]
 exclude = ["/target"]
 name = "loop-retry"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 rust-version = "1.85"
 description = "Generic async retry with exponential backoff and jitter"
@@ -21,7 +21,7 @@ tracing = ["dep:tracing"]
 
 [dev-dependencies]
 proptest = "1"
-tokio = { version = "1", features = ["rt-multi-thread", "macros", "time"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "test-util"] }
 criterion = { version = "0.5", features = ["html_reports"] }
 
 [lints.rust]
