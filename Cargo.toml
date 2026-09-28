@@ -12,7 +12,7 @@ categories = ["rust-patterns"]
 
 [dependencies]
 tokio = { version = "1", features = ["time"] }
-rand = "0.9"
+rand = "0.10"
 thiserror = "2"
 tracing = { version = "0.1", optional = true }
 
