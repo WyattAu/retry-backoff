@@ -1,11 +1,11 @@
-# Requirements — retry-backoff
+# Requirements: retry-backoff
 
 Numbered, testable requirements. Every requirement maps to at least one named
 test; every security-relevant test cites at least one requirement. Threat
 IDs reference `THREAT-MODEL.md`.
 
 Scope note: `loop-retry` provides generic async retry with exponential
-backoff and jitter — `RetryConfig` presets and custom budgets,
+backoff and jitter: `RetryConfig` presets and custom budgets,
 `delay_for_attempt` policy math, `with_backoff` as the retry executor,
 `RetryError` for exhaustion outcomes, and the `IsRetryable` trait for
 caller-defined retryability.
@@ -27,7 +27,7 @@ caller-defined retryability.
 |----|-------------|----------|
 | REQ-RB-100 | Delay arithmetic is overflow-safe: for any attempt index the computed delay stays within `[0, max_delay]` (T1) | MUST |
 | REQ-RB-101 | Jittered delays are non-negative and bounded by the cap (T2) | MUST |
-| REQ-RB-102 | Retry budgets are finite and preset values are pinned by tests — configuration drift cannot silently create unbounded retry loops (T3) | MUST |
+| REQ-RB-102 | Retry budgets are finite and preset values are pinned by tests: configuration drift cannot silently create unbounded retry loops (T3) | MUST |
 | REQ-RB-103 | Retryability is caller-owned via `IsRetryable`; the crate never retries non-retryable errors on its own authority (T4) | MUST |
 
 ## Robustness

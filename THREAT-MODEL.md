@@ -1,4 +1,4 @@
-# Threat Model — retry-backoff
+# Threat Model: retry-backoff
 
 Status: **v1.0** · Method: STRIDE over the public API surface
 (`RetryConfig`, `with_backoff`, `RetryError`, `IsRetryable`).
@@ -29,17 +29,17 @@ budget-exhaustion attacks against callers.
 | T1 | Delay arithmetic overflow (huge attempt counts, huge multipliers) | Tampering/DoS | `RetryConfig::delay_for_attempt` | Delay is computed in `f64` space and capped by `max_delay` before conversion; property tests pin the result to `[0, max_delay]` for arbitrary attempts | `delay_never_exceeds_max`, `delay_for_attempt_always_non_negative`, `delay_increases_monotonically_without_jitter` (`tests/proptest.rs`) |
 | T2 | Jitter producing negative or zero-progression sleeps | Tampering | `delay_for_attempt` (jitter on) | Jitter is bounded to ±10% of the capped delay and property-tested non-negative | `delay_with_jitter_still_non_negative` (`tests/proptest.rs`) |
 | T3 | Unbounded retries via misconfiguration | DoS | `RetryConfig` | Retry count is a `u32` budget; `no_retries()` exists for disable-and-observe; presets (`default`, `aggressive`) are pinned by tests so silent preset drift is detectable | `no_retries_config_zero_max` (proptest), `default_config`, `delay_increases_exponentially`, `delay_respects_max` |
-| T4 | Retryable misclassification amplifies outages | Elevation | `IsRetryable` | Retryability is a caller-implemented trait — the crate never second-guesses typed errors; `RetryError` distinguishes exhausted-retry outcomes from operation errors so callers keep full information | `RetryError` variants in API; caller trait tests in suite |
+| T4 | Retryable misclassification amplifies outages | Elevation | `IsRetryable` | Retryability is a caller-implemented trait: the crate never second-guesses typed errors; `RetryError` distinguishes exhausted-retry outcomes from operation errors so callers keep full information | `RetryError` variants in API; caller trait tests in suite |
 | T5 | Config corruption between construction and use | Tampering | `RetryConfig` | Config is plain data (`Clone`) and property-tested to preserve values across clones | `config_clone_preserves_values` (`tests/proptest.rs`) |
 
-## OPEN RISKS (missing mitigations — not fabricated)
+## OPEN RISKS (missing mitigations: not fabricated)
 
-- **OPEN-1 — no circuit-breaker.** The crate retries per-call; it does
+- **OPEN-1: no circuit-breaker.** The crate retries per-call; it does
   not coordinate failure budgets across calls. Callers in outage
   scenarios should layer a circuit breaker upstream.
-- **OPEN-2 — no retry-budget telemetry.** Retry counts are not emitted
+- **OPEN-2: no retry-budget telemetry.** Retry counts are not emitted
   anywhere; observability of retry storms is the caller's job.
-- **OPEN-3 — `aggressive()` preset is generous by design** (10 retries);
+- **OPEN-3: `aggressive()` preset is generous by design** (10 retries);
   using it against rate-limited services can look like an attack.
   Documented preset, caller's choice.
 
@@ -53,5 +53,5 @@ budget-exhaustion attacks against callers.
 ## Residual Risks
 
 - Retry storms remain possible if many callers share a failing
-  dependency and all use jittered backoff simultaneously — jitter
+  dependency and all use jittered backoff simultaneously: jitter
   spreads but does not eliminate correlation.
