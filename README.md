@@ -64,6 +64,16 @@ impl IsRetryable for MyError {
 }
 ```
 
+## Where the truth lives
+
+| Concern | File |
+|---|---|
+| Retry policy semantics, usage (normative) | `README.md` |
+| Requirements REQ-RB-001..200 + traceability | `REQUIREMENTS.md` |
+| Threat model | `THREAT-MODEL.md` |
+| Security policy | `SECURITY.md` |
+| Release history | `CHANGELOG.md` |
+
 ## License
 
 Licensed under either of [Apache License, Version 2.0](LICENSE-APACHE) or [MIT License](LICENSE-MIT) at your option.

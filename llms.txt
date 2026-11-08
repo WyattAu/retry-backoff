@@ -1,0 +1,15 @@
+# retry-backoff (loop-retry)
+
+> Generic async retry with exponential backoff and jitter: `RetryConfig`
+> presets (`default`, `no_retries`, `aggressive`) and custom budgets,
+> `delay_for_attempt` overflow-safe policy math, `with_backoff` as the retry
+> executor, `RetryError` for exhaustion outcomes, and the caller-owned
+> `IsRetryable` trait for retryability classification (REQ-RB-001..200).
+
+## Docs
+
+- [README.md](README.md): retry semantics, configuration, error classification, usage.
+- [REQUIREMENTS.md](REQUIREMENTS.md): numbered requirements REQ-RB-001..200 with test traceability.
+- [THREAT-MODEL.md](THREAT-MODEL.md): threat model referenced by requirement threat IDs.
+- [SECURITY.md](SECURITY.md): security policy.
+- [CHANGELOG.md](CHANGELOG.md): release history.
